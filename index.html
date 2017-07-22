@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.5/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.5/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.5/addons/p5.sound.min.js"></script>
+    
+  <!--<base href="http://turing-editor.herokuapp.com/admin/sketches/BkZqVaP0x/">--><base href="."><style>
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+</style><script src="http://turing-editor.herokuapp.com/loop-protect.min.js"></script><script src="http://turing-editor.herokuapp.com/hijackConsole.js"></script><script>
+    function getScriptOff(line) {
+      var offs = [[49,"sketch"]];
+      var l = 0;
+      var file = '';
+      for (var i=0; i<offs.length; i++) {
+        var n = offs[i][0];
+        if (n < line && n > l) {
+          l = n;
+          file = offs[i][1];
+        }
+      }
+      return [line - l, file];
+    }
+
+    // catch reference errors, via http://stackoverflow.com/a/12747364/2994108
+    window.onerror = function (msg, url, lineNumber, columnNo, error) {
+        var string = msg.toLowerCase();
+        var substring = "script error";
+        var data = {};
+
+        if (string.indexOf(substring) !== -1){
+          data = 'Script Error: See Browser Console for Detail';
+        } else {
+          var fileInfo = getScriptOff(lineNumber);
+          data = msg + ' (' + fileInfo[1] + ': line ' + fileInfo[0] + ')';
+        }
+
+        window.parent.postMessage([{
+          method: 'error',
+          arguments: data,
+          source: fileInfo[1]
+        }], '*');
+      return false;
+    };
+  </script></head>
+  <body>
+    <script data-tag="@fs-sketch.js">// The setup functions runs once
+// at the start of the program
+var sheep
+var hole
+var sheepRect
+var coins
+var score
+
+function setup() {
+  score = 0
+  createCanvas(450, 450);
+  coins = []
+  {;loopProtect.protect({ line: 13, reset: true }); for (var i = 0; i < 5; i++) {;if (loopProtect.protect({ line: 13 })) break;
+    var coin = {
+      x: random(100, 400),
+      y: random(270, 320),
+      width: 15,
+      height: 15,
+      visibility: 1
+    }
+    coins.push(coin)
+  }}
+  sheep = {
+    x: 0,
+    y: 360,
+    width: 50,
+    height: 50,
+    xSpeed: 4,
+    ySpeed: 0
+  }
+  hole = {
+    x: random(200, 350),
+    y: 399,
+    width: 48,
+    height: 51,
+  }
+}
+
+function drawSheep() {
+  noStroke()
+  fill('black')
+  rect(sheep.x, sheep.y,
+    sheep.width / 4, sheep.height - 10)
+  rect(sheep.x - 40, sheep.y,
+    sheep.width / 4, sheep.height - 10)
+  fill('white')
+  ellipse(sheep.x, sheep.y, sheep.width,
+    sheep.height)
+  ellipse(sheep.x - 30, sheep.y, sheep.width,
+    sheep.height)
+  ellipse(sheep.x + 20, sheep.y - 15,
+    sheep.width - 10, sheep.height - 10)
+  ellipse(sheep.x - 52, sheep.y,
+    sheep.width / 3, sheep.height / 3)
+  fill('black')
+  ellipse(sheep.x + 15, sheep.y - 25,
+    sheep.width / 8, sheep.height / 8)
+  ellipse(sheep.x + 30, sheep.y - 25,
+    sheep.width / 8, sheep.height / 8)
+  ellipse(sheep.x + 22.5, sheep.y - 15,
+    sheep.width / 8, sheep.height / 8)
+}
+
+function drawBackground() {
+  noStroke()
+  background('dodgerblue');
+  fill('lime');
+  rect(0, 400, 450, 50)
+  fill('yellow')
+  ellipse(400, 50, 60, 60)
+}
+
+function drawHole() {
+  fill('saddlebrown')
+  rect(hole.x, hole.y,
+    hole.width, hole.height)
+}
+
+function draw() {
+  drawBackground()
+  drawSheep()
+  drawHole()
+  sheepRect = {
+    x: sheep.x - 40,
+    y: sheep.y - 35,
+    width: sheep.width,
+    height: sheep.height + 25
+  }
+  if (collidingWithSheep(hole)) {
+    gameOver()
+  }
+  {;loopProtect.protect({ line: 92, reset: true }); for (var i = 0; i < 5; i++) {;if (loopProtect.protect({ line: 92 })) break;
+    if (coins[i].visibility > 0) {
+      fill('yellow')
+      ellipse(coins[i].x, coins[i].y, coins[i].width,
+        coins[i].height)
+
+      if (collidingWithSheep(coins[i])) {
+        coins[i].visibility = 0
+        score = score + 1
+
+      }
+    }
+  }}
+  fill('white')
+  textSize(20)
+  text('Coins: ' + score, 20, 30)
+  if (keyIsDown(RIGHT_ARROW)) {
+    sheep.x = sheep.x + sheep.xSpeed
+  }
+  if (sheep.x > 450) {
+    sheep.x = 0
+    {;loopProtect.protect({ line: 113, reset: true }); for (i = 0; i < 5; i++) {;if (loopProtect.protect({ line: 113 })) break;
+    coins[i].visibility = 1
+    coins[i].x = random(100, 400)
+    coins[i].y = random(270, 320)
+      hole.x = random(200, 350)
+      
+    }}
+  }
+  if (keyIsDown(UP_ARROW) && sheep.y ===
+    360) {
+    sheep.ySpeed = sheep.ySpeed - 18
+  }
+
+  sheep.y = sheep.y + sheep.ySpeed
+  sheep.ySpeed = sheep.ySpeed + 1
+  if (sheep.y > 360) {
+    sheep.y = 360
+    sheep.ySpeed = 0
+  }
+  
+
+}
+
+function collidingWithSheep(object) {
+  if (sheepRect.x + sheepRect.width > object.x &&
+    sheepRect.x <
+    object.x + object.width) {
+    if (sheepRect.y + sheepRect.height > object.y &&
+      sheepRect.y < object.y + object.height) {
+      //gameOver()
+      return true;
+    }
+  }
+}
+
+function gameOver() {
+  fill('black')
+  textSize(50)
+  text('GAME OVER!', 65, 200)
+  noLoop()
+}</script>
+  
+
+<canvas id="defaultCanvas0" width="450" height="450" style="width: 450px; height: 450px;"></canvas></body></html>
